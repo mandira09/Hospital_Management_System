@@ -18,10 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="hospital-frontend\src\services\" />
     <Folder Include="Middleware\" />
     <Folder Include="Helpers\" />
     <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

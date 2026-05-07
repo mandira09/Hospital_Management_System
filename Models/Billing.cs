@@ -15,5 +15,11 @@ namespace Hospital_Management.Models
         public decimal Amount { get; set; }
 
         public string? PaymentStatus { get; set; }
+
+        public string? CreatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; }
+
+        public string? UpdatedBy { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

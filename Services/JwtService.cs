@@ -18,7 +18,9 @@ public class JwtService
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim("UserId", user.Id.ToString()),
+            new Claim("PatientId", user.Id.ToString())
         };
 
         var key = new SymmetricSecurityKey(
@@ -29,6 +31,7 @@ public class JwtService
 
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
             claims: claims,
             expires: DateTime.Now.AddHours(2),
             signingCredentials: creds
