@@ -10,3 +10,68 @@
 [07-05-2026 16:42:53] | User: admin | Operation: Viewed Doctor Appointments | Time Taken: 9 ms
 [07-05-2026 16:55:32] | User: admin | Operation: Rescheduled Appointment | Time Taken: 160 ms
 [07-05-2026 16:58:28] | User: admin | Operation: Rescheduled Appointment | Time Taken: 126 ms
+[07-05-2026 19:09:03] | User: Tanvi | Operation: Rescheduled Appointment | Time Taken: 333 ms
+[07-05-2026 19:22:24] | User: admin | Operation: Rescheduled Appointment | Time Taken: 249 ms
+[07-05-2026 19:22:33] | User: admin | Operation: Rescheduled Appointment | Time Taken: 48 ms
+[07-05-2026 19:23:00] | User: admin | Operation: Rescheduled Appointment | Time Taken: 84 ms
+[07-05-2026 19:23:52] | User: admin | Operation: Rescheduled Appointment | Time Taken: 59 ms
+[07-05-2026 19:32:41] | User: admin | Operation: Added Patient | Time Taken: 2594 ms
+[07-05-2026 20:03:26] | User: admin | Operation: Added Patient | Time Taken: 360 ms
+[07-05-2026 20:04:36] | User: admin | Operation: Added Patient | Time Taken: 31 ms
+[07-05-2026 20:06:36] | User: Aniket | Operation: Viewed Doctors | Time Taken: 52 ms
+[07-05-2026 20:06:56] | User: Aniket | Operation: Booked Appointment | Time Taken: 130 ms
+[07-05-2026 23:32:01] | User: admin | Operation: Cancelled Appointment (Admin) | Time Taken: 273 ms
+[08-05-2026 00:07:08] | User: Aniket | Operation: Cancelled Appointment | Time Taken: 325 ms
+[08-05-2026 00:17:34] | User: Aniket | Operation: Viewed Doctors | Time Taken: 203 ms
+[08-05-2026 00:18:08] | User: Aniket | Operation: Booked Appointment | Time Taken: 628 ms
+[08-05-2026 00:18:28] | User: Aniket | Operation: Viewed Patient Appointments | Time Taken: 34 ms
+[08-05-2026 00:19:05] | User: Aniket | Operation: Viewed Patient Appointments | Time Taken: 66 ms
+[08-05-2026 00:19:10] | User: Aniket | Operation: Viewed Patient Appointments | Time Taken: 11 ms
+[08-05-2026 00:20:26] | User: Aniket | Operation: Rescheduled Appointment | Time Taken: 171 ms
+[08-05-2026 00:21:30] | User: Aniket | Operation: Rescheduled Appointment | Time Taken: 79 ms
+[08-05-2026 00:34:21] | User: Aniket | Operation: Viewed Patient Appointments | Time Taken: 183 ms
+[08-05-2026 00:34:27] | User: Aniket | Operation: Viewed Patient Appointments | Time Taken: 19 ms
+[08-05-2026 00:45:19] | User: Aniket | Operation: Viewed Patient Appointments | Time Taken: 46 ms
+[08-05-2026 00:49:34] | User: Aniket | Operation: Viewed Doctors | Time Taken: 23 ms
+[08-05-2026 01:25:08] | User: Meghana | Operation: Booked Appointment | Time Taken: 160 ms
+[08-05-2026 01:27:57] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 15 ms
+[08-05-2026 01:28:03] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 11 ms
+[08-05-2026 01:28:09] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 4 ms
+[08-05-2026 01:29:11] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 6 ms
+[08-05-2026 01:29:15] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 4 ms
+[08-05-2026 01:29:21] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 4 ms
+[08-05-2026 01:30:56] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 16 ms
+[08-05-2026 01:31:01] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 4 ms
+[08-05-2026 01:31:23] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 12 ms
+[08-05-2026 01:31:54] | User: Soorya | Operation: Rescheduled Appointment | Time Taken: 57 ms
+[08-05-2026 01:32:24] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 6 ms
+[08-05-2026 01:32:37] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 5 ms
+[08-05-2026 01:32:38] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 4 ms
+[08-05-2026 01:32:43] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 4 ms
+[08-05-2026 01:38:48] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 45 ms
+[08-05-2026 01:39:22] | User: Soorya | Operation: Rescheduled Appointment | Time Taken: 158 ms
+[08-05-2026 01:39:40] | User: Soorya | Operation: Cancelled Appointment | Time Taken: 25 ms
+[08-05-2026 01:46:39] | User: Meghana | Operation: Booked Appointment | Time Taken: 157 ms
+[08-05-2026 01:58:11] | User: Soorya | Operation: User Login | Time Taken: 1071 ms
+[08-05-2026 01:58:42] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 40 ms
+[08-05-2026 01:59:23] | User: Meghana | Operation: User Login | Time Taken: 50 ms
+[08-05-2026 01:59:51] | User: Meghana | Operation: Viewed Patient Appointments | Time Taken: 10 ms
+[08-05-2026 02:00:59] | User: admin | Operation: User Login | Time Taken: 7 ms
+[08-05-2026 02:03:40] | User: admin | Operation: Registered User | Time Taken: 4978 ms
+[08-05-2026 02:10:35] | User: Meghana | Operation: User Login | Time Taken: 14 ms
+[08-05-2026 02:11:29] | User: Meghana | Operation: Booked Appointment | Time Taken: 56 ms
+[08-05-2026 02:14:43] | User: Meghana | Operation: User Login | Time Taken: 85 ms
+[08-05-2026 02:34:50] | User: Meghana | Operation: User Login | Time Taken: 1158 ms
+[08-05-2026 02:37:17] | User: admin | Operation: User Login | Time Taken: 28 ms
+[08-05-2026 02:39:01] | User: admin | Operation: Added Patient | Time Taken: 151 ms
+[08-05-2026 02:41:02] | User: admin | Operation: Registered User | Time Taken: 4749 ms
+[08-05-2026 02:41:45] | User: Daya | Operation: User Login | Time Taken: 10 ms
+[08-05-2026 02:42:58] | User: Daya | Operation: Booked Appointment | Time Taken: 62 ms
+[08-05-2026 02:43:53] | User: Daya | Operation: Viewed Patient Appointments | Time Taken: 18 ms
+[08-05-2026 02:44:20] | User: Daya | Operation: Viewed Patient Appointments | Time Taken: 4 ms
+[08-05-2026 02:44:49] | User: Daya | Operation: Rescheduled Appointment | Time Taken: 60 ms
+[08-05-2026 02:45:29] | User: Daya | Operation: Cancelled Appointment | Time Taken: 17 ms
+[08-05-2026 02:46:05] | User: Daya | Operation: Booked Appointment | Time Taken: 27 ms
+[08-05-2026 02:47:09] | User: Soorya | Operation: User Login | Time Taken: 9 ms
+[08-05-2026 02:48:09] | User: Soorya | Operation: Viewed Doctor Appointments | Time Taken: 8 ms
+[08-05-2026 02:48:41] | User: Soorya | Operation: Rescheduled Appointment | Time Taken: 31 ms

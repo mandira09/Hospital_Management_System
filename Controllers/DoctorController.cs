@@ -23,8 +23,9 @@ namespace Hospital_Management.Controllers
             _context = context;
             _logger = logger;
         }
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddDoctor(DoctorDto dto)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -54,7 +55,7 @@ namespace Hospital_Management.Controllers
    );
             return Ok(doctor);
         }
-        [Authorize]
+        
         [HttpGet]
         public IActionResult GetDoctors()
 

@@ -16,6 +16,10 @@ namespace Hospital_Management.Models
         public string Role { get; set; } // Admin / Doctor / Patient
         public string? Email { get; set; }
 
+        public int? UId { get; set; }
+
+        public int? DId { get; set; }
+
         public string? CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
 

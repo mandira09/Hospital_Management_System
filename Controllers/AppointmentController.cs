@@ -32,38 +32,58 @@ namespace Hospital_Management.Controllers
 
             var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
 
+            // 🔥 PATIENT VALIDATION
+            if (User.IsInRole("Patient"))
+            {
+                var uIdClaim = User.FindFirst("UId")?.Value;
+
+                if (uIdClaim == null)
+                    return Unauthorized("UId not found in token");
+
+                int uId = int.Parse(uIdClaim);
+
+                // 🔥 Patient can book only for own ID
+                if (dto.PatientId != uId)
+                {
+                    return Unauthorized("You can book appointments only for yourself");
+                }
+            }
+
             if (dto.PatientId <= 0 || dto.DoctorId <= 0)
                 return BadRequest("Invalid PatientId or DoctorId");
 
             var inputTime = dto.DateTime;
+
+            // 🔥 Prevent past booking
             if (inputTime < DateTime.Now)
             {
                 return BadRequest("Cannot book appointment for past date/time");
             }
 
+            // 🔥 Doctor working hours
             if (inputTime.Hour < 10 || inputTime.Hour >= 17)
                 return BadRequest("Doctor available only between 10AM - 5PM");
 
             // 🔥 Doctor unavailable for next 30 mins
-
             var appointmentEndTime = inputTime.AddMinutes(30);
 
             var exists = _context.Appointments.Any(a =>
                 a.DoctorId == dto.DoctorId &&
+                a.Status != "Cancelled" &&
 
-                // overlap validation
+                // 🔥 Overlap validation
                 inputTime < a.DateTime.AddMinutes(30) &&
                 appointmentEndTime > a.DateTime
             );
 
             if (exists)
             {
-                return BadRequest("Doctor not available for next 30 minutes");
+                return BadRequest("Doctor not available");
             }
 
             var appointment = new Appointment
             {
-                PatientId = dto.PatientId,   // ✅ DIRECT INPUT
+                PatientId = dto.PatientId,
                 DoctorId = dto.DoctorId,
                 DateTime = inputTime,
                 Status = "Scheduled",
@@ -85,17 +105,34 @@ namespace Hospital_Management.Controllers
 
             return Ok("Appointment booked successfully");
         }
-
         [HttpGet("{patientId}")]
+        [Authorize(Roles = "Admin,Patient")]
         public IActionResult Get(int patientId)
         {
             var stopwatch = Stopwatch.StartNew();
 
             var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
 
+            // 🔥 ADMIN CAN VIEW ANY PATIENT APPOINTMENTS
+            if (!User.IsInRole("Admin"))
+            {
+                var uIdClaim = User.FindFirst("UId")?.Value;
+
+                if (uIdClaim == null)
+                    return Unauthorized("UId not found in token");
+
+                int uId = int.Parse(uIdClaim);
+
+                // 🔥 Patient can view only own appointments
+                if (patientId != uId)
+                {
+                    return Unauthorized("You can view only your own appointments");
+                }
+            }
+
             var appointments = _context.Appointments
-            .Where(x => x.PatientId == patientId)
-            .ToList();
+                .Where(x => x.PatientId == patientId)
+                .ToList();
 
             stopwatch.Stop();
 
@@ -107,46 +144,108 @@ namespace Hospital_Management.Controllers
             );
 
             return Ok(appointments);
-
         }
         [HttpPut("reschedule")]
-        public IActionResult Reschedule(int appointmentId, DateTime newDateTime)
+        public IActionResult Reschedule(RescheduleDto dto)
         {
             var stopwatch = Stopwatch.StartNew();
+
             var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
-            var appointment = _context.Appointments.Find(appointmentId);
+
+            var appointment = _context.Appointments.Find(dto.AppointmentId);
 
             if (appointment == null)
                 return NotFound("Appointment not found");
 
+            // 🔥 ADMIN CAN RESCHEDULE ANY APPOINTMENT
+            if (!User.IsInRole("Admin"))
+            {
+                // 🔥 PATIENT VALIDATION
+                if (User.IsInRole("Patient"))
+                {
+                    var uIdClaim = User.FindFirst("UId")?.Value;
+
+                    if (uIdClaim == null)
+                        return Unauthorized("UId not found in token");
+
+                    int uId = int.Parse(uIdClaim);
+
+                    // 🔥 Patient can reschedule only own appointment
+                    if (appointment.PatientId != uId)
+                    {
+                        return Unauthorized("You can reschedule only your own appointments");
+                    }
+                }
+
+                // 🔥 DOCTOR VALIDATION
+                if (User.IsInRole("Doctor"))
+                {
+                    var dIdClaim = User.FindFirst("DId")?.Value;
+
+                    if (dIdClaim == null)
+                        return Unauthorized("DId not found in token");
+
+                    int dId = int.Parse(dIdClaim);
+
+                    // 🔥 Doctor can reschedule only own appointments
+                    if (appointment.DoctorId != dId)
+                    {
+                        return Unauthorized("You can reschedule only your own appointments");
+                    }
+                }
+            }
+
+            // 🔥 Prevent past date/time
+            if (dto.NewDateTime < DateTime.Now)
+            {
+                return BadRequest("Cannot reschedule to past date/time");
+            }
+
+            // 🔥 30-minute overlap validation
+            var appointmentEndTime = dto.NewDateTime.AddMinutes(30);
+
             var exists = _context.Appointments.Any(x =>
                 x.DoctorId == appointment.DoctorId &&
-                x.DateTime == newDateTime);
+                x.AppointmentId != dto.AppointmentId &&
+                x.Status != "Cancelled" &&
+                // 🔥 Overlap check
+                dto.NewDateTime < x.DateTime.AddMinutes(30) &&
+                appointmentEndTime > x.DateTime
+            );
 
             if (exists)
-                return BadRequest("Doctor already booked for this time");
+            {
+                return BadRequest("Doctor already booked");
+            }
 
-            appointment.DateTime = newDateTime;
+            // 🔥 Update appointment
+            appointment.DateTime = dto.NewDateTime;
             appointment.Status = "Rescheduled";
+
+            // 🔥 Audit fields
             appointment.UpdatedBy = username;
             appointment.UpdatedAt = DateTime.Now;
 
             _context.SaveChanges();
+
             stopwatch.Stop();
+
+            // 🔥 txt logging
             _logger.Log(
-    username,
-    "Rescheduled Appointment",
-    stopwatch.ElapsedMilliseconds
-);
+                username,
+                "Rescheduled Appointment",
+                stopwatch.ElapsedMilliseconds
+            );
 
             return Ok(appointment);
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Patient,Admin")]
+        [Authorize(Roles = "Patient,Doctor,Admin")]
         public IActionResult Delete(int id)
         {
             var stopwatch = Stopwatch.StartNew();
+
             var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
 
             var appointment = _context.Appointments
@@ -155,57 +254,105 @@ namespace Hospital_Management.Controllers
             if (appointment == null)
                 return NotFound("Appointment not found");
 
+            // 🔥 ADMIN CAN CANCEL ANY APPOINTMENT
             if (User.IsInRole("Admin"))
             {
-                _context.Appointments.Remove(appointment);
+                appointment.Status = "Cancelled";
+
+                appointment.UpdatedBy = username;
+                appointment.UpdatedAt = DateTime.Now;
+
                 _context.SaveChanges();
+
                 stopwatch.Stop();
+
                 _logger.Log(
-    username,
-    "Deleted Appointment (Admin)",
-    stopwatch.ElapsedMilliseconds
-);
+                    username,
+                    "Cancelled Appointment (Admin)",
+                    stopwatch.ElapsedMilliseconds
+                );
 
-                return Ok("Deleted by Admin");
+                return Ok("Appointment cancelled by Admin");
             }
 
-            var patientIdClaim = User.FindFirst("PatientId")?.Value;
-
-            if (patientIdClaim == null)
-                return Unauthorized("PatientId not found in token");
-
-            int patientId = int.Parse(patientIdClaim);
-
-            // 🔥 4. SECURITY CHECK
-            if (appointment.PatientId != patientId)
+            // 🔥 PATIENT VALIDATION
+            if (User.IsInRole("Patient"))
             {
-                return Forbid("You can only delete your own appointments");
+                var uIdClaim = User.FindFirst("UId")?.Value;
+
+                if (uIdClaim == null)
+                    return Unauthorized("UId not found in token");
+
+                int uId = int.Parse(uIdClaim);
+
+                // 🔥 Patient can cancel only own appointment
+                if (appointment.PatientId != uId)
+                {
+                    return Unauthorized("You can cancel only your own appointments");
+                }
             }
 
-            // 🔥 5. Delete
-            _context.Appointments.Remove(appointment);
+            // 🔥 DOCTOR VALIDATION
+            if (User.IsInRole("Doctor"))
+            {
+                var dIdClaim = User.FindFirst("DId")?.Value;
+
+                if (dIdClaim == null)
+                    return Unauthorized("DId not found in token");
+
+                int dId = int.Parse(dIdClaim);
+
+                // 🔥 Doctor can cancel only own appointments
+                if (appointment.DoctorId != dId)
+                {
+                    return Unauthorized("You can cancel only your own appointments");
+                }
+            }
+
+            // 🔥 SOFT DELETE
+            appointment.Status = "Cancelled";
+
+            appointment.UpdatedBy = username;
+            appointment.UpdatedAt = DateTime.Now;
+
             _context.SaveChanges();
 
             stopwatch.Stop();
 
-            // 🔥 Log into txt file
             _logger.Log(
                 username,
-                "Deleted Appointment",
+                "Cancelled Appointment",
                 stopwatch.ElapsedMilliseconds
             );
 
-            return Ok("Deleted successfully");
+            return Ok("Appointment cancelled successfully");
         }
 
         [HttpGet("doctor/{doctorId}")]
-        [Authorize(Roles = "Doctor,Admin")]   
+        [Authorize(Roles = "Doctor,Admin")]
         public IActionResult GetByDoctor(int doctorId)
         {
             var stopwatch = Stopwatch.StartNew();
 
             // 🔥 Get logged-in username
             var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
+
+            // 🔥 ADMIN CAN VIEW ANY DOCTOR APPOINTMENTS
+            if (!User.IsInRole("Admin"))
+            {
+                var dIdClaim = User.FindFirst("DId")?.Value;
+
+                if (dIdClaim == null)
+                    return Unauthorized("DId not found in token");
+
+                int dId = int.Parse(dIdClaim);
+
+                // 🔥 Doctor can view only own appointments
+                if (doctorId != dId)
+                {
+                    return Unauthorized("You can view only your own appointments");
+                }
+            }
 
             var appointments = _context.Appointments
                 .Where(a => a.DoctorId == doctorId)
@@ -224,7 +371,7 @@ namespace Hospital_Management.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Doctor")]    
+        [Authorize(Roles = "Admin")]    
         public IActionResult GetAll()
 
         {

@@ -20,6 +20,7 @@ namespace Hospital_Management.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateBill(BillingDto dto)
         {
             var bill = new Billing
@@ -36,6 +37,7 @@ namespace Hospital_Management.Controllers
         }
 
         [HttpPost("payment")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Pay(int billId)
         {
             var bill = _context.Billings.Find(billId);
@@ -51,6 +53,7 @@ namespace Hospital_Management.Controllers
         }
 
         [HttpGet("{patientId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetBills(int patientId)
         {
             var bills = _context.Billings

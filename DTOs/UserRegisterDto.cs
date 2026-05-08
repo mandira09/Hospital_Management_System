@@ -7,6 +7,8 @@
         public string Role { get; set; }
         public string Email { get; set; }
 
+        public int? UId { get; set; }
 
+        public int? DId { get; set; }
     }
 }

@@ -15,13 +15,27 @@ public class JwtService
 
     public string GenerateToken(User user)
     {
-        var claims = new[]
+        var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, user.Username),
+    new Claim(ClaimTypes.Role, user.Role)
+};
+
+        // 🔥 Patient
+        if (user.Role.ToLower() == "patient")
         {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim("UserId", user.Id.ToString()),
-            new Claim("PatientId", user.Id.ToString())
-        };
+            claims.Add(
+                new Claim("UId", user.UId?.ToString() ?? "0")
+            );
+        }
+
+        // 🔥 Doctor
+        if (user.Role.ToLower() == "doctor")
+        {
+            claims.Add(
+                new Claim("DId", user.DId?.ToString() ?? "0")
+            );
+        }
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["Jwt:Key"])
